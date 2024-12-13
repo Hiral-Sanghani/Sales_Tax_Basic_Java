@@ -35,7 +35,7 @@ public class Receipt {
     public double calculateTax(Product product) {
         double tax = 0;
 
-        if (!product.getItemTaxEnum().isExempt()) {
+        if (!product.getTaxableItemType().isExempt()) {
             tax += product.getPrice() * 0.10;
         }
 

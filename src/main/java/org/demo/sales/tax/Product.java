@@ -5,14 +5,14 @@ public class Product {
     private String itemName;
     private int quantity;
     private Double price;
-    private ItemTaxEnum itemTaxEnum;
+    private TaxableItemType taxableItemType;
     private boolean isImported;
 
-    public Product(String itemName, int quantity, Double price, ItemTaxEnum itemTaxEnum, boolean isImported) {
+    public Product(String itemName, int quantity, Double price, TaxableItemType taxableItemType, boolean isImported) {
         this.itemName = itemName;
         this.quantity = quantity;
         this.price = price;
-        this.itemTaxEnum = itemTaxEnum;
+        this.taxableItemType = taxableItemType;
         this.isImported = isImported;
     }
 
@@ -24,12 +24,12 @@ public class Product {
         isImported = imported;
     }
 
-    public ItemTaxEnum getItemTaxEnum() {
-        return itemTaxEnum;
+    public TaxableItemType getTaxableItemType() {
+        return taxableItemType;
     }
 
-    public void setItemTaxEnum(ItemTaxEnum itemTaxEnum) {
-        this.itemTaxEnum = itemTaxEnum;
+    public void setTaxableItemType(TaxableItemType taxableItemType) {
+        this.taxableItemType = taxableItemType;
     }
 
     public String getItemName() {
