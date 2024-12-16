@@ -9,7 +9,6 @@ public class Bill {
         Cart cart = new Cart();
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Welcome to the Sales Tax Calculator!");
         System.out.println("Enter product details in the following format:");
         System.out.println("name, quantity, price, category (BOOK/MEDICAL/FOOD/OTHERGOOD), isImported (true/false)");
         System.out.println("Type 'done' when you are finished adding products.\n");
