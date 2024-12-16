@@ -1,48 +1,42 @@
 package org.demo.sales.tax;
 
-import java.util.List;
+import java.text.DecimalFormat;
 
 public class Receipt {
-    private List<Product> products;
-    private double totalTax;
-    private double finalCost;
+    private final Cart cart;
+    private double totalSalesTax = 0.0;
+    private double totalCost = 0.0;
 
-    public Receipt(List<Product> products) {
-        this.products = products;
-        calculateTotalsAndPrintProductDetails();
-    }
-
-    private void calculateTotalsAndPrintProductDetails() {
-        totalTax = 0;
-        finalCost = 0;
-
-        for (Product p : products) {
-            double tax = calculateTax(p);
-            double finalPrice = p.getPrice() + tax;
-
-            totalTax += tax;
-            finalCost += finalPrice;
-
-            System.out.printf("%d %s: %.2f%n", p.getQuantity(), p.getItemName(), finalPrice);
-        }
+    public Receipt(Cart cart) {
+        this.cart = cart;
     }
 
     public void printReceipt() {
-        System.out.printf("Sales Taxes: %.2f%n", totalTax);
-        System.out.printf("Total: %.2f%n", finalCost);
+        DecimalFormat df = new DecimalFormat("0.00");
+        System.out.println("\nReceipt:");
+
+        for (Product product : cart.getProducts()) {
+            double itemTax = calculateTax(product);
+            double finalPrice = product.getQuantity() * (product.getPrice() + itemTax);
+
+            totalSalesTax += product.getQuantity() * itemTax;
+            totalCost += finalPrice;
+
+            System.out.printf("%d %s: %s%n", product.getQuantity(), product.getItemName(), df.format(finalPrice));
+        }
+
+        System.out.printf("Sales Taxes: %s%n", df.format(totalSalesTax));
+        System.out.printf("Total: %s%n", df.format(totalCost));
     }
 
-    public double calculateTax(Product product) {
-        double tax = 0;
+    private double calculateTax(Product product) {
+        double basicTaxRate = product.getItemTaxEnum().isExempt() ? 0.0 : 0.1;
+        double importTaxRate = product.isImported() ? 0.05 : 0.0;
 
-        if (!product.getTaxableItemType().isExempt()) {
-            tax += product.getPrice() * 0.10;
-        }
+        double totalTaxRate = basicTaxRate + importTaxRate;
+        double tax = product.getPrice() * totalTaxRate;
 
-        if (product.isImported()) {
-            tax += product.getPrice() * 0.05;
-        }
 
-        return Math.ceil(tax * 20) / 20.0;
+        return Math.ceil(tax * 20.0) / 20.0;
     }
 }

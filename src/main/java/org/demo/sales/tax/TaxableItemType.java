@@ -1,6 +1,6 @@
 package org.demo.sales.tax;
 
-public enum TaxableItemType  {
+public enum TaxableItemType {
     BOOK(true),
     MEDICAL(true),
     FOOD(true),
@@ -8,7 +8,7 @@ public enum TaxableItemType  {
 
     private final boolean isExempt;
 
-    TaxableItemType  (boolean isExempt) {
+    TaxableItemType(boolean isExempt) {
         this.isExempt = isExempt;
     }
 

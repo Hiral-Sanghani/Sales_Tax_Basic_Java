@@ -1,32 +1,66 @@
 package org.demo.sales.tax;
 
+import org.demo.sales.tax.Cart;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Scanner;
 
 public class Bill {
     public static void main(String[] args) {
-        List<Product> productsList1 = Arrays.asList(
-                new Product("book", 1, 12.49, TaxableItemType.BOOK, false),
-                new Product("music CD", 1, 14.99, TaxableItemType.OTHERGOOD, false),
-                new Product("chocolate bar", 1, 0.85, TaxableItemType.FOOD, false));
+        Cart cart = new Cart();
+        Scanner scanner = new Scanner(System.in);
 
-        List<Product> productsList2 = Arrays.asList(
-                new Product("imported box of chocolates", 1, 10.0, TaxableItemType.FOOD, true),
-                new Product("imported bottle of perfume", 1, 47.50, TaxableItemType.OTHERGOOD, true));
+        System.out.println("Welcome to the Sales Tax Calculator!");
+        System.out.println("Enter product details in the following format:");
+        System.out.println("name, quantity, price, category (BOOK/MEDICAL/FOOD/OTHERGOOD), isImported (true/false)");
+        System.out.println("Type 'done' when you are finished adding products.\n");
 
-        List<Product> productsList3 = Arrays.asList(
-                new Product("imported bottle of perfume", 1, 27.99, TaxableItemType.OTHERGOOD, true),
-                new Product("bottle of perfume", 1, 18.99, TaxableItemType.OTHERGOOD, false),
-                new Product("packet of headache pills", 1, 9.75, TaxableItemType.MEDICAL, false),
-                new Product("imported box of chocolates", 1, 11.25, TaxableItemType.FOOD, true));
+        while (true) {
+            System.out.print("Enter product details: ");
+            String input = scanner.nextLine();
 
+            if (input.equalsIgnoreCase("done")) {
+                break;
+            }
 
-        new Receipt(productsList1).printReceipt();
-        System.out.println("\n  \n");
-        new Receipt(productsList2).printReceipt();
-        System.out.println("\n  \n");
-        new Receipt(productsList3).printReceipt();
+            try {
+                Product product = parseProductInput(input);
+                cart.addProduct(product);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid input format. Please try again: " + e.getMessage());
+            }
+        }
 
+        if (cart.getProducts().isEmpty()) {
+            System.out.println("No products were added. Exiting program.");
+        } else {
+            Receipt receipt = new Receipt(cart);
+            receipt.printReceipt();
+        }
+
+        scanner.close();
+    }
+
+    private static Product parseProductInput(String input) throws IllegalArgumentException {
+        String[] parts = input.split(",");
+
+        if (parts.length != 5) {
+            throw new IllegalArgumentException("Input must have exactly 5 values separated by commas.");
+        }
+
+        String name = parts[0].trim();
+        int quantity;
+        double price;
+        TaxableItemType category;
+        boolean isImported;
+
+        try {
+            quantity = Integer.parseInt(parts[1].trim());
+            price = Double.parseDouble(parts[2].trim());
+            category = TaxableItemType.valueOf(parts[3].trim().toUpperCase());
+            isImported = Boolean.parseBoolean(parts[4].trim());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid data format: " + e.getMessage());
+        }
+        return new Product(name, quantity, price, category, isImported);
     }
 }
