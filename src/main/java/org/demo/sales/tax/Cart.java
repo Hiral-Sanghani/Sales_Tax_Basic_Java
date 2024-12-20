@@ -15,6 +15,6 @@ public class Cart {
     }
 
     public List<Product> getProducts() {
-        return products;
+        return new ArrayList<>(products);
     }
 }

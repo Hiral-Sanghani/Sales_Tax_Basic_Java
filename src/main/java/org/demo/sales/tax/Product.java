@@ -19,7 +19,7 @@ public class Product {
         return isImported;
     }
 
-    public TaxableItemType getItemTaxEnum() {
+    public TaxableItemType getTaxableItemType() {
         return taxableItemType;
     }
 

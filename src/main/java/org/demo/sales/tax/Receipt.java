@@ -3,20 +3,21 @@ package org.demo.sales.tax;
 import java.text.DecimalFormat;
 
 public class Receipt {
-    private final Cart cart;
-    private double totalSalesTax = 0.0;
-    private double totalCost = 0.0;
+    private final TaxCalculator taxCalculator;
+    private final DecimalFormat df = new DecimalFormat("0.00");
 
-    public Receipt(Cart cart) {
-        this.cart = cart;
+    public Receipt(TaxCalculator taxCalculator) {
+        this.taxCalculator = taxCalculator;
     }
 
-    public void printReceipt() {
-        DecimalFormat df = new DecimalFormat("0.00");
+    public void generateReceipt(Cart cart) {
+        double totalSalesTax = 0.0;
+        double totalCost = 0.0;
+
         System.out.println("\nReceipt:");
 
         for (Product product : cart.getProducts()) {
-            double itemTax = calculateTax(product);
+            double itemTax = taxCalculator.calculateTax(product);
             double finalPrice = product.getQuantity() * (product.getPrice() + itemTax);
 
             totalSalesTax += product.getQuantity() * itemTax;
@@ -27,16 +28,5 @@ public class Receipt {
 
         System.out.printf("Sales Taxes: %s%n", df.format(totalSalesTax));
         System.out.printf("Total: %s%n", df.format(totalCost));
-    }
-
-    private double calculateTax(Product product) {
-        double basicTaxRate = product.getItemTaxEnum().isExempt() ? 0.0 : 0.1;
-        double importTaxRate = product.isImported() ? 0.05 : 0.0;
-
-        double totalTaxRate = basicTaxRate + importTaxRate;
-        double tax = product.getPrice() * totalTaxRate;
-
-
-        return Math.ceil(tax * 20.0) / 20.0;
     }
 }
